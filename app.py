@@ -16,30 +16,6 @@ modelo, min_max_scaler, variables = pickle.load(open(filename, 'rb'))
 import streamlit as st
 import pandas as pd
 
-# Se realiza la preparación
-data_preparada=data.copy()
-
-# En despliegue drop_first= False
-data_preparada = pd.get_dummies(data_preparada, columns=['videojuego', 'Plataforma','Sexo', 'Consumidor_habitual'], drop_first=False, dtype=int)
-data_preparada.head()
-
-
-# Se adicionan las columnas faltantes
-data_preparada=data_preparada.reindex(columns=variables,fill_value=0)
-data_preparada.head()
-
-# Se normaliza la edad para predecir con Knn, Red, SVM
-# En los despliegues no se llama fit
-data_preparada[['Edad']]= min_max_scaler.transform(data_preparada[['Edad']])
-data_preparada.head()
-
-# Hacemos la predicción con el Tree
-Y_pred = modelo.predict(data_preparada)
-print(Y_pred)
-
-data['Prediccion']=Y_pred
-data.head()
-
 data
 # Page config
 st.set_page_config(
@@ -279,3 +255,26 @@ if predict:
     st.markdown("**Vista previa de los datos**")
     st.dataframe(data, use_container_width=True, hide_index=True)
 
+# Se realiza la preparación
+data_preparada=data.copy()
+
+# En despliegue drop_first= False
+data_preparada = pd.get_dummies(data_preparada, columns=['videojuego', 'Plataforma','Sexo', 'Consumidor_habitual'], drop_first=False, dtype=int)
+data_preparada.head()
+
+
+# Se adicionan las columnas faltantes
+data_preparada=data_preparada.reindex(columns=variables,fill_value=0)
+data_preparada.head()
+
+# Se normaliza la edad para predecir con Knn, Red, SVM
+# En los despliegues no se llama fit
+data_preparada[['Edad']]= min_max_scaler.transform(data_preparada[['Edad']])
+data_preparada.head()
+
+# Hacemos la predicción con el Tree
+Y_pred = modelo.predict(data_preparada)
+print(Y_pred)
+
+data['Prediccion']=Y_pred
+data.head()
